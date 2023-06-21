@@ -1,12 +1,14 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header class="header" height="60px"><h1 class="title">数据分析</h1></el-header>
+      <el-header class="header" height="80px"><h1 class="header_title">数据分析</h1></el-header>
       <el-container>
         <el-aside width="220px" class="aside">
           <a-side/>
         </el-aside>
-        <el-main class="main">Main</el-main>
+        <el-main class="main">
+          <router-view/>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -18,7 +20,7 @@
 import ASide from "@/components/ASide.vue";
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .common-layout {
   height: 100vh;
 
@@ -30,7 +32,7 @@ import ASide from "@/components/ASide.vue";
     background-color: #fff;
   }
 
-  .title {
+  .header_title {
     color: #7FC6D8;
     font-size: 24px;
     font-weight: 700;
@@ -39,10 +41,18 @@ import ASide from "@/components/ASide.vue";
     letter-spacing: 2px;
   }
 
-  .aside {
+  .aside, .main {
     padding: 18px 12px;
   }
 
+  .main {
+    .title {
+      font-size: 24px;
+      font-weight: 700;
+      padding: 8px 12px;
+      letter-spacing: 2px;
+    }
+  }
 }
 
 </style>
