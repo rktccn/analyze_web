@@ -1,13 +1,16 @@
 <template>
-  <div class="common-layout">
+  <div class='common-layout'>
     <el-container>
-      <el-header class="header" height="80px"><h1 class="header_title">数据分析</h1></el-header>
+      <el-header class='header' height='80px'><h1 class='header_title'>数据分析</h1></el-header>
       <el-container>
-        <el-aside width="220px" class="aside">
-          <a-side/>
+        <el-aside width='220px' class='aside'>
+          <a-side />
         </el-aside>
-        <el-main class="main">
-          <router-view/>
+        <el-main class='main_view'>
+          <el-scrollbar>
+            <router-view />
+            <div class='main-footer'></div>
+          </el-scrollbar>
         </el-main>
       </el-container>
     </el-container>
@@ -17,12 +20,13 @@
 <script setup>
 
 
-import ASide from "@/components/ASide.vue";
+import ASide from '@/components/ASide.vue'
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 .common-layout {
   height: 100vh;
+  overflow: hidden;
 
   .el-container {
     height: 100%;
@@ -41,11 +45,15 @@ import ASide from "@/components/ASide.vue";
     letter-spacing: 2px;
   }
 
-  .aside, .main {
+  .aside, .main_view {
     padding: 18px 12px;
   }
 
-  .main {
+  .main_view {
+
+    .main-footer{
+      height: 120px;
+    }
     .title {
       font-size: 24px;
       font-weight: 700;
