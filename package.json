@@ -8,11 +8,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "echarts": "^5.4.2",
     "element-plus": "^2.3.6",
     "sass": "^1.63.4",
     "unplugin-auto-import": "^0.16.4",
     "unplugin-vue-components": "^0.25.1",
     "vue": "^3.3.4",
+    "vue-echarts": "^6.6.0",
     "vue-router": "^4.2.2"
   },
   "devDependencies": {
