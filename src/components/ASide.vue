@@ -1,23 +1,21 @@
 <template>
   <el-menu
-      default-active="1"
-      class="aside"
-      @open="handleOpen"
-      @close="handleClose"
+    default-active='1'
+    class='aside'
   >
-    <el-menu-item index="1" @click="router.push({name:'AssociationRule'})">
+    <el-menu-item index='1' @click="router.push({name:'AssociationRule'})">
       <span>关联规则</span>
     </el-menu-item>
 
-    <el-menu-item index="2" @click="router.push({name:'Classification'})">
+    <el-menu-item index='2' @click="router.push({name:'Classification'})">
       <span>聚类分析</span>
     </el-menu-item>
 
-    <el-menu-item index="3" @click="router.push({name:'Clustering'})">
+    <el-menu-item index='3' @click="router.push({name:'Clustering'})">
       <span>分类分析</span>
     </el-menu-item>
 
-    <el-menu-item index="4" @click="router.push({name:'Regression'})">
+    <el-menu-item index='4' @click="router.push({name:'Regression'})">
       <span>回归分析</span>
     </el-menu-item>
   </el-menu>
@@ -25,21 +23,14 @@
 </template>
 
 <script setup>
-import {useRouter} from "vue-router"
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const handleOpen = (key, keyPath) => {
-  console.log(key, keyPath)
-}
-
-const handleClose = (key, keyPath) => {
-  console.log(key, keyPath)
-}
 
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .aside {
   height: 100%;
   color: #fff;

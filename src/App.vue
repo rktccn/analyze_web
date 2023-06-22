@@ -51,9 +51,14 @@ import ASide from '@/components/ASide.vue'
 
   .main_view {
 
-    .main-footer{
+    .chart {
+      height: 480px;
+    }
+
+    .main-footer {
       height: 120px;
     }
+
     .title {
       font-size: 24px;
       font-weight: 700;

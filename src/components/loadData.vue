@@ -80,10 +80,9 @@ const generateData = (
       (rowData, column, columnIndex) => {
         rowData[column.dataKey] = `Row ${rowIndex} - Col ${columnIndex}`
         return rowData
-      },
-      {
-        id: `${prefix}${rowIndex}`,
-        parentId: null
+      }, {
+        id: `${prefix}${rowIndex}`
+        // parentId: null
       }
     )
   })
