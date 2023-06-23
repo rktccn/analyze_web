@@ -41,9 +41,9 @@
     </el-row>
   </div>
 
-  <div class='load-data_table'>
+  <div class='load-data_table block'>
     <div style='height: 400px'>
-      <el-auto-resizer>
+      <el-auto-resizer v-if='data'>
         <template #default='{ height, width }'>
           <el-table-v2
             :columns='columns'
@@ -54,6 +54,7 @@
           />
         </template>
       </el-auto-resizer>
+      <el-empty v-else></el-empty>
     </div>
   </div>
 </template>
@@ -123,8 +124,8 @@ const data = generateData(columns, 1000)
 }
 
 .load-data_table {
-  padding: 20px;
-  border-radius: 16px;
-  background-color: #fff;
+  //padding: 20px;
+  //border-radius: 16px;
+  //background-color: #fff;
 }
 </style>

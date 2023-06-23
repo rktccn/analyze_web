@@ -65,6 +65,13 @@ import ASide from '@/components/ASide.vue'
       padding: 8px 12px;
       letter-spacing: 2px;
     }
+
+    .block {
+      margin-top: 12px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 25px;
+    }
   }
 }
 

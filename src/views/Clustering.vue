@@ -9,13 +9,13 @@
     <el-row :gutter='20'>
       <el-col :span='12'>
         <!--散点图展示-->
-        <div class='main'>
+        <div class='main block'>
           <v-chart class='chart' :option='scatterOption' autoresize />
         </div>
       </el-col>
       <el-col :span='12'>
         <!--聚类图展示-->
-        <div class='main' style='text-align: center'>
+        <div class='main block' style='text-align: center'>
           <v-chart class='chart' :option='clusterOption' autoresize />
           <span>K值设定： <el-input-number v-model='k_value' :min='1' :max='10' /></span>
         </div>
@@ -159,10 +159,5 @@ const clusterOption = ref({
 </script>
 
 <style lang='scss' scoped>
-.main {
-  margin-top: 12px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 25px;
-}
+
 </style>

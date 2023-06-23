@@ -7,11 +7,11 @@
       <span>关联规则</span>
     </el-menu-item>
 
-    <el-menu-item index='2' @click="router.push({name:'Classification'})">
+    <el-menu-item index='2' @click="router.push({name:'Clustering'})">
       <span>聚类分析</span>
     </el-menu-item>
 
-    <el-menu-item index='3' @click="router.push({name:'Clustering'})">
+    <el-menu-item index='3' @click="router.push({name:'Classification'})">
       <span>分类分析</span>
     </el-menu-item>
 

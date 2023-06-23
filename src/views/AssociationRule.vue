@@ -5,7 +5,7 @@
   <el-button type='primary'>导入数据</el-button>
   <load-data></load-data>
 
-  <div class='main'>
+  <div class='main block'>
     <el-row :gutter='20' style='height: 100%;width: 100%;'>
       <el-col :span='18'>
         <v-chart class='chart' :option='option' autoresize />
@@ -127,9 +127,5 @@ const option = ref({
 <style lang='scss' scoped>
 .main {
   height: 480px;
-  margin-top: 12px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 25px;
 }
 </style>
