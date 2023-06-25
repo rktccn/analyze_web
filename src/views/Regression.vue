@@ -64,7 +64,6 @@ const regressionMethod = ref([{
 
 const regressionValue = ref(regressionMethod.value[1])
 
-
 echarts.registerTransform(ecStat.transform.regression)
 const option = computed(() => {
   return {
