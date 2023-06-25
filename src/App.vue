@@ -43,7 +43,7 @@ const route = useRoute()
   }
 
   .header_title {
-    color: #7FC6D8;
+    color: #409eff;
     font-size: 24px;
     font-weight: 700;
     margin: 0;
@@ -56,6 +56,7 @@ const route = useRoute()
   }
 
   .main_view {
+    padding-top: 26px;
 
     .chart {
       height: 480px;

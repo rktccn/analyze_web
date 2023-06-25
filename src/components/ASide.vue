@@ -43,5 +43,9 @@ const router = useRouter()
 
 .el-menu-item {
   border-radius: 15px;
+
+  .is-active{
+    background-color: red;
+  }
 }
 </style>
