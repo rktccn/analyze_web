@@ -1,26 +1,27 @@
 <template>
+  <div>
   <span class='title'>
     聚类分析
   </span>
-  <el-button type='primary'>导入数据</el-button>
-  <load-data></load-data>
-
-  <div>
-    <el-row :gutter='20'>
-      <el-col :span='12'>
-        <!--散点图展示-->
-        <div class='main block'>
-          <v-chart class='chart' :option='scatterOption' autoresize />
-        </div>
-      </el-col>
-      <el-col :span='12'>
-        <!--聚类图展示-->
-        <div class='main block' style='text-align: center'>
-          <v-chart class='chart' :option='clusterOption' autoresize />
-          <span>K值设定： <el-input-number v-model='k_value' :min='1' :max='10' /></span>
-        </div>
-      </el-col>
-    </el-row>
+    <el-button type='primary' @click="getData">导入数据</el-button>
+    <load-data :columns="originColumns" :data="originData"></load-data>
+    <div>
+      <el-row :gutter='20'>
+        <el-col :span='12'>
+          <!--散点图展示-->
+          <div class='main block'>
+            <v-chart class='chart' :option='scatterOption' autoresize/>
+          </div>
+        </el-col>
+        <el-col :span='12'>
+          <!--聚类图展示-->
+          <div class='main block' style='text-align: center'>
+            <v-chart class='chart' :option='clusterOption' autoresize/>
+            <span>K值设定： <el-input-number v-model='k_value' :min='1' :max='10'/></span>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -28,15 +29,15 @@
 import LoadData from '@/components/loadData.vue'
 import VChart from 'vue-echarts'
 
-import { CanvasRenderer } from 'echarts/renderers'
-import { ScatterChart } from 'echarts/charts'
+import {CanvasRenderer} from 'echarts/renderers'
+import {ScatterChart} from 'echarts/charts'
 import {
   TitleComponent,
   TooltipComponent,
   VisualMapComponent
 } from 'echarts/components'
-import { use } from 'echarts/core'
-import { ref } from 'vue'
+import {use} from 'echarts/core'
+import {ref} from 'vue'
 
 use([
   CanvasRenderer,
@@ -45,6 +46,10 @@ use([
   VisualMapComponent,
   ScatterChart
 ])
+
+// 原始数据
+const originData = ref([])
+const originColumns = ref([])
 
 const scatterOption = ref({
   title: {
@@ -156,6 +161,36 @@ const clusterOption = ref({
   ]
 })
 
+const getData = () => {
+  const generateColumns = (length = 10, prefix = 'column-', props) =>
+      Array.from({length}).map((_, columnIndex) => ({
+        ...props,
+        key: `${prefix}${columnIndex}`,
+        dataKey: `${prefix}${columnIndex}`,
+        title: `Column ${columnIndex}`,
+        width: 150
+      }))
+
+  const generateData = (
+      columns,
+      length = 200,
+      prefix = 'row-'
+  ) =>
+      Array.from({length}).map((_, rowIndex) => {
+        return columns.reduce(
+            (rowData, column, columnIndex) => {
+              rowData[column.dataKey] = `Row ${rowIndex} - Col ${columnIndex}`
+              return rowData
+            }, {
+              id: `${prefix}${rowIndex}`
+              // parentId: null
+            }
+        )
+      })
+
+  originColumns.value = generateColumns(10)
+  originData.value = generateData(originColumns.value, 1000)
+}
 </script>
 
 <style lang='scss' scoped>

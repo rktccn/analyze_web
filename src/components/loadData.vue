@@ -13,7 +13,7 @@
 
             <template #prefix>
               <el-icon :size='28' color='#73C0DE'>
-                <BarChartFilled />
+                <BarChartFilled/>
               </el-icon>
             </template>
           </el-statistic>
@@ -32,7 +32,7 @@
 
             <template #prefix>
               <el-icon :size='28' color='#FAC858'>
-                <AccountTreeRound />
+                <AccountTreeRound/>
               </el-icon>
             </template>
           </el-statistic>
@@ -46,11 +46,11 @@
       <el-auto-resizer v-if='data'>
         <template #default='{ height, width }'>
           <el-table-v2
-            :columns='columns'
-            :data='data'
-            :width='width'
-            :height='height'
-            fixed
+              :columns='columns'
+              :data='data'
+              :width='width'
+              :height='height'
+              fixed
           />
         </template>
       </el-auto-resizer>
@@ -60,36 +60,48 @@
 </template>
 
 <script setup>
-import { BarChartFilled, AccountTreeRound } from '@vicons/material'
+import {BarChartFilled, AccountTreeRound} from '@vicons/material'
+
+const props = defineProps({
+  data: {
+    type: Array,
+    default: () => []
+  },
+  columns: {
+    type: Array,
+    default: () => []
+  }
+})
 
 const generateColumns = (length = 10, prefix = 'column-', props) =>
-  Array.from({ length }).map((_, columnIndex) => ({
-    ...props,
-    key: `${prefix}${columnIndex}`,
-    dataKey: `${prefix}${columnIndex}`,
-    title: `Column ${columnIndex}`,
-    width: 150
-  }))
+    Array.from({length}).map((_, columnIndex) => ({
+      ...props,
+      key: `${prefix}${columnIndex}`,
+      dataKey: `${prefix}${columnIndex}`,
+      title: `Column ${columnIndex}`,
+      width: 150
+    }))
 
-const generateData = (
-  columns,
-  length = 200,
-  prefix = 'row-'
-) =>
-  Array.from({ length }).map((_, rowIndex) => {
-    return columns.reduce(
-      (rowData, column, columnIndex) => {
-        rowData[column.dataKey] = `Row ${rowIndex} - Col ${columnIndex}`
-        return rowData
-      }, {
-        id: `${prefix}${rowIndex}`
-        // parentId: null
-      }
-    )
-  })
 
-const columns = generateColumns(10)
-const data = generateData(columns, 1000)
+// const generateData = (
+//     columns,
+//     length = 200,
+//     prefix = 'row-'
+// ) =>
+//     Array.from({length}).map((_, rowIndex) => {
+//       return columns.reduce(
+//           (rowData, column, columnIndex) => {
+//             rowData[column.dataKey] = `Row ${rowIndex} - Col ${columnIndex}`
+//             return rowData
+//           }, {
+//             id: `${prefix}${rowIndex}`
+//             // parentId: null
+//           }
+//       )
+//     })
+//
+// const columns = generateColumns(10)
+// const data = generateData(columns, 1000)
 </script>
 
 <style lang='scss' scoped>

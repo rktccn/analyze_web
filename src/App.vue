@@ -4,11 +4,15 @@
       <el-header class='header' height='80px'><h1 class='header_title'>数据分析</h1></el-header>
       <el-container>
         <el-aside width='220px' class='aside'>
-          <a-side />
+          <a-side/>
         </el-aside>
         <el-main class='main_view'>
           <el-scrollbar>
-            <router-view />
+            <router-view v-slot="{ Component, route }">
+              <transition name="zoom-out" mode="out-in">
+                <component :is="Component" :key="route.path"/>
+              </transition>
+            </router-view>
             <div class='main-footer'></div>
           </el-scrollbar>
         </el-main>
@@ -18,9 +22,11 @@
 </template>
 
 <script setup>
-
-
+import {useRoute} from "vue-router";
 import ASide from '@/components/ASide.vue'
+
+const route = useRoute()
+
 </script>
 
 <style lang='scss'>
@@ -75,4 +81,41 @@ import ASide from '@/components/ASide.vue'
   }
 }
 
+
+.zoom-out-enter-from {
+  opacity: 0;
+  transform: scale(1.3);
+}
+
+.zoom-out-enter-to,
+.zoom-out-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.zoom-out-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.zoom-out-enter-active {
+  transition: all 0.15s;
+  transition-timing-function: cubic-bezier(
+          0.19,
+          1,
+          0.22,
+          1
+  ); /* easeOutExpo */
+}
+
+.zoom-out-leave-active {
+  transition: all 0.15s;
+
+  transition-timing-function: cubic-bezier(
+          0.95,
+          0.05,
+          0.795,
+          0.035
+  ); /* easeInExpo */
+}
 </style>

@@ -1,38 +1,40 @@
 <template>
+  <div>
   <span class='title'>
     回归分析
   </span>
-  <el-button type='primary'>导入数据</el-button>
-  <load-data></load-data>
-  <div class='main block'>
-    <el-row :gutter='20'>
-      <el-col :span='18'>
-        <v-chart class='chart' :option='option' autoresize :key='regressionValue.id' />
-      </el-col>
-      <el-col :span='6'>
-        <el-text>回归方法</el-text>
-        <br />
-        <el-select v-model='regressionValue' class='m-2' placeholder='Select' size='large'>
-          <el-option
-            v-for='item in regressionMethod'
-            :key='item.id'
-            :label='item.label'
-            :value='item'
-          />
-        </el-select>
-      </el-col>
-    </el-row>
+    <el-button type='primary' @click="getData">导入数据</el-button>
+    <load-data :columns="originColumns" :data="originData"></load-data>
+    <div class='main block'>
+      <el-row :gutter='20'>
+        <el-col :span='18'>
+          <v-chart class='chart' :option='option' autoresize :key='regressionValue.id'/>
+        </el-col>
+        <el-col :span='6'>
+          <el-text>回归方法</el-text>
+          <br/>
+          <el-select v-model='regressionValue' class='m-2' placeholder='Select' size='large'>
+            <el-option
+                v-for='item in regressionMethod'
+                :key='item.id'
+                :label='item.label'
+                :value='item'
+            />
+          </el-select>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
 <script setup>
 import LoadData from '@/components/loadData.vue'
 import VChart from 'vue-echarts'
-import { CanvasRenderer } from 'echarts/renderers'
-import { ScatterChart } from 'echarts/charts'
+import {CanvasRenderer} from 'echarts/renderers'
+import {ScatterChart} from 'echarts/charts'
 import {} from 'echarts/components'
-import { use } from 'echarts/core'
-import { computed, ref } from 'vue'
+import {use} from 'echarts/core'
+import {computed, ref} from 'vue'
 import * as echarts from 'echarts'
 import * as ecStat from 'echarts-stat'
 
@@ -41,20 +43,23 @@ use([
   ScatterChart
 ])
 
+// 原始数据
+const originData = ref([])
+const originColumns = ref([])
 
 // 回归方式选择
 const regressionMethod = ref([{
   id: 1,
   label: '线性回归',
-  value: { method: 'linear', formulaOn: 'end' }
+  value: {method: 'linear', formulaOn: 'end'}
 }, {
   id: 2,
   label: '多项式回归',
-  value: { method: 'polynomial', order: 3 }
+  value: {method: 'polynomial', order: 3}
 }, {
   id: 3,
   label: '指数回归',
-  value: { method: 'exponential' }
+  value: {method: 'exponential'}
 }])
 
 const regressionValue = ref(regressionMethod.value[1])
@@ -132,13 +137,44 @@ const option = computed(() => {
         datasetIndex: 1,
         symbolSize: 0.1,
         symbol: 'circle',
-        label: { show: true, fontSize: 16 },
-        labelLayout: { dx: -20 },
-        encode: { label: 2, tooltip: 1 }
+        label: {show: true, fontSize: 16},
+        labelLayout: {dx: -20},
+        encode: {label: 2, tooltip: 1}
       }
     ]
   }
 })
+
+const getData = () => {
+  const generateColumns = (length = 10, prefix = 'column-', props) =>
+      Array.from({length}).map((_, columnIndex) => ({
+        ...props,
+        key: `${prefix}${columnIndex}`,
+        dataKey: `${prefix}${columnIndex}`,
+        title: `Column ${columnIndex}`,
+        width: 150
+      }))
+
+  const generateData = (
+      columns,
+      length = 200,
+      prefix = 'row-'
+  ) =>
+      Array.from({length}).map((_, rowIndex) => {
+        return columns.reduce(
+            (rowData, column, columnIndex) => {
+              rowData[column.dataKey] = `Row ${rowIndex} - Col ${columnIndex}`
+              return rowData
+            }, {
+              id: `${prefix}${rowIndex}`
+              // parentId: null
+            }
+        )
+      })
+
+  originColumns.value = generateColumns(10)
+  originData.value = generateData(originColumns.value, 1000)
+}
 </script>
 
 <style lang='scss' scoped></style>
