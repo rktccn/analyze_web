@@ -17,7 +17,7 @@
             <el-slider v-model='confidence' show-input :min='0' :max='1' :step='0.01'/>
             <br/>
             <el-text class='mx-1'>支持度</el-text>
-            <el-slider v-model='support' show-input :min='0' :max='1' :step='0.01'/>
+            <el-slider v-model='support' show-input :min='0.1' :max='1' :step='0.01'/>
           </div>
         </el-col>
       </el-row>

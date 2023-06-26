@@ -6,19 +6,23 @@ export const getOriginData = (type) => {
     return http({
         url: '/get_origin_data',
         method: 'get',
-        data: {
+        params: {
             type
         }
     })
 }
 //
 // // 获取热力图数据
-// export const getHeatMapData = () => {
-//     return http({
-//         url: '',
-//         method: 'get',
-//     })
-// }
+export const getHeatMapData = (confidence,support) => {
+    return http({
+        url: '/get_association_data',
+        method: 'get',
+        params:{
+            confidence,
+            support
+        }
+    })
+}
 //
 // // 获取散点图数据
 export const getScatterData = () => {
@@ -40,17 +44,17 @@ export const getClusterData = (k_value = 3, type = 0) => {
     })
 }
 //
-// // 获取分类树
-// export const getTreeData = (maxDepth,minLeaf) => {
-//     return http({
-//         url: '',
-//         method: 'get',
-//         data:{
-//             maxDepth,
-//             minLeaf
-//         }
-//     })
-// }
+// 获取分类树
+export const getTreeData = (maxDepth,minLeaf) => {
+    return http({
+        url: '/get_tree_data',
+        method: 'get',
+        params:{
+            maxDepth,
+            minLeaf
+        }
+    })
+}
 //
 // // 获取回归
 // export const getRegressionData = (type) => {
@@ -90,13 +94,13 @@ export const getClusterData = (k_value = 3, type = 0) => {
 // }
 
 // 获取热力图数据
-export const getHeatMapData = async () => {
-    return {
-        xAxis: ['面包', '可乐', '麦片', '牛奶', '鸡蛋'],
-        yAxis: ['面包', '可乐', '麦片', '牛奶', '鸡蛋'],
-        data: [[0, 0, 0.7777777777777778], [0, 1, 0.4444444444444444], [0, 2, 0.4444444444444444], [0, 3, 0.4444444444444444], [0, 4, 0.2222222222222222], [1, 0, 0.4444444444444444], [1, 1, 0.6666666666666666], [1, 2, 0.1111111111111111], [1, 3, 0.4444444444444444], [1, 4, 0.0], [2, 0, 0.4444444444444444], [2, 1, 0.1111111111111111], [2, 2, 0.4444444444444444], [2, 3, 0.2222222222222222], [2, 4, 0.2222222222222222], [3, 0, 0.4444444444444444], [3, 1, 0.4444444444444444], [3, 2, 0.2222222222222222], [3, 3, 0.6666666666666666], [3, 4, 0.1111111111111111], [4, 0, 0.2222222222222222], [4, 1, 0.0], [4, 2, 0.2222222222222222], [4, 3, 0.1111111111111111], [4, 4, 0.2222222222222222]]
-    }
-}
+// export const getHeatMapData = async () => {
+//     return {
+//         xAxis: ['面包', '可乐', '麦片', '牛奶', '鸡蛋'],
+//         yAxis: ['面包', '可乐', '麦片', '牛奶', '鸡蛋'],
+//         data: [[0, 0, 0.7777777777777778], [0, 1, 0.4444444444444444], [0, 2, 0.4444444444444444], [0, 3, 0.4444444444444444], [0, 4, 0.2222222222222222], [1, 0, 0.4444444444444444], [1, 1, 0.6666666666666666], [1, 2, 0.1111111111111111], [1, 3, 0.4444444444444444], [1, 4, 0.0], [2, 0, 0.4444444444444444], [2, 1, 0.1111111111111111], [2, 2, 0.4444444444444444], [2, 3, 0.2222222222222222], [2, 4, 0.2222222222222222], [3, 0, 0.4444444444444444], [3, 1, 0.4444444444444444], [3, 2, 0.2222222222222222], [3, 3, 0.6666666666666666], [3, 4, 0.1111111111111111], [4, 0, 0.2222222222222222], [4, 1, 0.0], [4, 2, 0.2222222222222222], [4, 3, 0.1111111111111111], [4, 4, 0.2222222222222222]]
+//     }
+// }
 
 // 获取散点图数据
 // export const getScatterData = async () => {
@@ -113,36 +117,36 @@ export const getHeatMapData = async () => {
 // }
 
 // 获取分类树
-export const getTreeData = async (maxDepth, minLeaf) => {
-    return {
-        data: {
-            data: {
-                children: [
-                    {
-                        children: [
-                            {
-                                name: "叶子节点分类-2"
-                            },
-                            {
-                                children: [
-                                    {
-                                        name: "叶子节点分类-2"
-                                    },
-                                    {
-                                        name: "叶子节点分类-2"
-                                    }
-                                ],
-                                name: "分类0"
-                            }
-                        ],
-                        name: "分类3"
-                    }
-                ],
-                name: "root"
-            }
-        }
-    }
-}
+// export const getTreeData = async (maxDepth, minLeaf) => {
+//     return {
+//         data: {
+//             data: {
+//                 children: [
+//                     {
+//                         children: [
+//                             {
+//                                 name: "叶子节点分类-2"
+//                             },
+//                             {
+//                                 children: [
+//                                     {
+//                                         name: "叶子节点分类-2"
+//                                     },
+//                                     {
+//                                         name: "叶子节点分类-2"
+//                                     }
+//                                 ],
+//                                 name: "分类0"
+//                             }
+//                         ],
+//                         name: "分类3"
+//                     }
+//                 ],
+//                 name: "root"
+//             }
+//         }
+//     }
+// }
 
 // 获取回归
 export const getRegressionData = async (type) => {

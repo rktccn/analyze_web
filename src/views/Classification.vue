@@ -8,15 +8,17 @@
     <div class='main block'>
       <el-row :gutter='20'>
         <el-col :span='18'>
-          <v-chart class='chart' :option='option' autoresize/>
+          <!--          <v-chart class='chart' :option='option' autoresize/>-->
+          <img :src="`data:image/png;base64,${treeData}`" alt="" class="tree_img" v-if="treeData !== ''">
+          <div class="block" v-else></div>
         </el-col>
         <el-col :span='6' style='padding:0 30px;'>
           <div style='display: flex;justify-content: space-between'>设置最大深度
-            <el-input-number v-model='maxDepth'></el-input-number>
+            <el-input-number v-model='maxDepth' :min="1"></el-input-number>
           </div>
           <br/>
           <div style='display: flex;justify-content: space-between'>设置最小叶子节点数
-            <el-input-number v-model='minLeaf'></el-input-number>
+            <el-input-number v-model='minLeaf' :min="1"></el-input-number>
           </div>
         </el-col>
       </el-row>
@@ -25,23 +27,11 @@
 </template>
 
 <script setup>
-import {use} from 'echarts/core'
-import {CanvasRenderer} from 'echarts/renderers'
-import {TreeChart} from 'echarts/charts'
-import {
-  TooltipComponent
-} from 'echarts/components'
-import VChart from 'vue-echarts'
 import {computed, ref} from 'vue'
 import LoadData from '@/components/loadData.vue'
 import {getOriginData, getTreeData} from "@/apis";
 import {debounce} from "@/utils/tools";
 
-use([
-  TreeChart,
-  TooltipComponent,
-  CanvasRenderer
-])
 
 // 原始数据
 const originData = ref({
@@ -50,6 +40,7 @@ const originData = ref({
   count: 0
 })
 
+const treeData = ref('')
 
 const maxDepthValue = ref(5)
 const maxDepth = computed({
@@ -68,59 +59,13 @@ const minLeaf = computed({
   }
 })
 
-// 条件树数据
-const treeData = ref({})
-
-const option = computed(() => {
-      return {
-        tooltip: {
-          trigger: 'item',
-          triggerOn: 'mousemove'
-        },
-        series: [
-          {
-            type: 'tree',
-            // TODO:修改数据源
-            data: [treeData.value],
-            left: '2%',
-            right: '2%',
-            top: '8%',
-            bottom: '20%',
-            symbol: 'emptyCircle',
-            orient: 'vertical',
-            expandAndCollapse: true,
-            label: {
-              position: 'top',
-              rotate: 0,
-              verticalAlign: 'middle',
-              align: 'right',
-              fontSize: 24
-            },
-            leaves: {
-              label: {
-                position: 'bottom',
-                rotate: 0,
-                verticalAlign: 'middle',
-                align: 'left'
-              }
-            },
-            animationDurationUpdate: 750
-          }
-        ]
-      }
-    }
-)
-
-
 const getChangeData = () => {
   getTreeData(maxDepth.value, minLeaf.value).then(res => {
-    console.log(res)
-    treeData.value = res.data.data
+    treeData.value = res.data
   })
 }
 
 const getData = () => {
-  // TODO:修改数据源
   getOriginData(2).then(res => {
     console.log(res)
     originData.value.data = res.data
@@ -133,4 +78,10 @@ const getData = () => {
 
 </script>
 
-<style lang='scss' scoped></style>
+<style lang='scss' scoped>
+.tree_img {
+  width: 100%;
+  height: 100%;
+}
+
+</style>
