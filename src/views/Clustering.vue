@@ -39,6 +39,7 @@ import {
 import {use} from 'echarts/core'
 import {computed, ref} from 'vue'
 import {getScatterData, getOriginData, getClusterData} from "@/apis";
+import {debounce} from "@/utils/tools";
 
 use([
   CanvasRenderer,
@@ -60,8 +61,18 @@ const scatterData = ref({
   scatterData: [],
   clusterData: []
 })
+
 // K值
-const k_value = ref(3)
+const k = ref(3)
+const k_value = computed(
+  {
+    get: () => k.value,
+    set: (value) => {
+      k.value = value
+      debounce(getChangeData, 500)()
+    }
+  }
+)
 
 // 生成十二种不同颜色
 const color = [
@@ -105,11 +116,23 @@ const clusterOption = computed(() => {
   }
 })
 
+// 获取可变数据
+const getChangeData = () => {
+  getClusterData(k_value.value, 1).then(res => {
+    scatterData.value.clusterData = res.data.map(item => {
+      return {
+        symbolSize: 14,
+        type: 'scatter',
+        data: item
+      }
+    })
+  })
+}
+
 const getData = () => {
 
   // TODO:替换数据源
   getOriginData(1).then(res => {
-    console.log(res)
     originData.value.data = res.data
     originData.value.columns = res.columns
     originData.value.count = res.count
@@ -125,19 +148,8 @@ const getData = () => {
         data: item
       }
     })
-    console.log(scatterData.value.scatterData)
   })
-
-  getClusterData(k_value.value, 0).then(res => {
-    console.log(res)
-    scatterData.value.clusterData = res.data.map(item => {
-      return {
-        symbolSize: 14,
-        type: 'scatter',
-        data: item
-      }
-    })
-  })
+  getChangeData()
 }
 </script>
 

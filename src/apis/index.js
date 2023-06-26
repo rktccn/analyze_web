@@ -41,10 +41,14 @@ import http from '../utils/https.js'
 // }
 //
 // // 获取分类树
-// export const getTreeData = () => {
+// export const getTreeData = (maxDepth,minLeaf) => {
 //     return http({
 //         url: '',
 //         method: 'get',
+//         data:{
+//             maxDepth,
+//             minLeaf
+//         }
 //     })
 // }
 //
@@ -430,7 +434,7 @@ export const getClusterData = async (k_value, type) => {
 }
 
 // 获取分类树
-export const getTreeData = async () => {
+export const getTreeData = async (maxDepth, minLeaf) => {
     return {
         data: {
             name: 'root',

@@ -35,6 +35,7 @@ import VChart from 'vue-echarts'
 import {computed, ref} from 'vue'
 import LoadData from '@/components/loadData.vue'
 import {getOriginData, getTreeData} from "@/apis";
+import {debounce} from "@/utils/tools";
 
 use([
   TreeChart,
@@ -47,6 +48,24 @@ const originData = ref({
   data: [],
   columns: [],
   count: 0
+})
+
+
+const maxDepthValue = ref(5)
+const maxDepth = computed({
+  get: () => maxDepthValue.value,
+  set: (value) => {
+    maxDepthValue.value = value
+    debounce(getChangeData, 500)()
+  }
+})
+const minLeafValue = ref(1)
+const minLeaf = computed({
+  get: () => minLeafValue.value,
+  set: (value) => {
+    minLeafValue.value = value
+    debounce(getChangeData, 500)()
+  }
 })
 
 // 条件树数据
@@ -122,9 +141,12 @@ const option = computed(() => {
     }
 )
 
-const maxDepth = ref(5)
-const minLeaf = ref(1)
 
+const getChangeData = () => {
+  getTreeData(maxDepth.value, minLeaf.value).then(res => {
+    treeData.value = res.data
+  })
+}
 
 const getData = () => {
   // TODO:修改数据源
@@ -135,10 +157,7 @@ const getData = () => {
     originData.value.count = res.count
   })
 
-
-  getTreeData().then(res => {
-    treeData.value = res.data
-  })
+  getChangeData()
 }
 
 </script>

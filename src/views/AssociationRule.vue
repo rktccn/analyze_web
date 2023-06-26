@@ -8,7 +8,7 @@
     <div class='main block'>
       <el-row :gutter='20' style='height: 100%;width: 100%;'>
         <el-col :span='18'>
-          <v-chart class='chart' :option='option'  autoresize/>
+          <v-chart class='chart' :option='option' autoresize/>
         </el-col>
         <el-col :span='6'>
           <!--支持度，置信度输入框-->
@@ -38,6 +38,7 @@ import VChart from 'vue-echarts'
 import {computed, ref} from 'vue'
 import {getOriginData, getHeatMapData} from "@/apis";
 import LoadData from '@/components/loadData.vue'
+import {debounce} from "@/utils/tools";
 
 
 use([
@@ -63,9 +64,24 @@ const heatMapData = ref({
 })
 
 // 置信度
-const confidence = ref(0.5)
+const confidenceValue = ref(0.5)
+const confidence = computed({
+  get: () => confidenceValue.value,
+  set: (value) => {
+    confidenceValue.value = value
+    debounce(getChangeData, 500)()
+  }
+})
+
 // 支持度
-const support = ref(0.5)
+const supportValue = ref(0.5)
+const support = computed({
+  get: () => supportValue.value,
+  set: (value) => {
+    supportValue.value = value
+    debounce(getChangeData, 500)()
+  }
+})
 
 const option = computed(() => {
   return {
@@ -133,14 +149,9 @@ const option = computed(() => {
   }
 })
 
-const getData = () => {
-  getOriginData(0).then(res => {
-    console.log(res)
-    originData.value.data = res.data
-    originData.value.columns = res.columns
-    originData.value.count = res.count
-  })
 
+// 获取可变数据
+const getChangeData = () => {
   getHeatMapData(confidence.value, support.value).then(res => {
     console.log(res)
     heatMapData.value.data = res.data.map(function (item) {
@@ -150,6 +161,18 @@ const getData = () => {
     heatMapData.value.yAxis = res.yAxis
   })
 }
+
+const getData = () => {
+  getOriginData(0).then(res => {
+    console.log(res)
+    originData.value.data = res.data
+    originData.value.columns = res.columns
+    originData.value.count = res.count
+  })
+
+  getChangeData()
+}
+
 </script>
 
 <style lang='scss' scoped>
