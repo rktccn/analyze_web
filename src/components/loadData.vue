@@ -4,7 +4,7 @@
       <!--数据条数展示-->
       <el-col :span='8'>
         <div class='statistic-card'>
-          <el-statistic :value='98500'>
+          <el-statistic :value='data?.count ?? 0'>
             <template #title>
               <div style='display: inline-flex; align-items: center'>
                 样本数量
@@ -23,7 +23,7 @@
       <!--数据特征数量展示-->
       <el-col :span='8'>
         <div class='statistic-card'>
-          <el-statistic :value='693700'>
+          <el-statistic :value='data?.columns?.length ?? 0'>
             <template #title>
               <div style='display: inline-flex; align-items: center'>
                 特征数量
@@ -43,11 +43,11 @@
 
   <div class='load-data_table block'>
     <div style='height: 400px'>
-      <el-auto-resizer v-if='data'>
+      <el-auto-resizer v-if='data.data'>
         <template #default='{ height, width }'>
           <el-table-v2
-              :columns='columns'
-              :data='data'
+              :columns='data.columns'
+              :data='data.data'
               :width='width'
               :height='height'
               fixed
@@ -64,23 +64,18 @@ import {BarChartFilled, AccountTreeRound} from '@vicons/material'
 
 const props = defineProps({
   data: {
-    type: Array,
-    default: () => []
-  },
-  columns: {
-    type: Array,
-    default: () => []
+    type: Object,
+    default: () => {
+      return {
+        data: [],
+        columns: [],
+        count: 0
+      }
+    }
   }
 })
 
-const generateColumns = (length = 10, prefix = 'column-', props) =>
-    Array.from({length}).map((_, columnIndex) => ({
-      ...props,
-      key: `${prefix}${columnIndex}`,
-      dataKey: `${prefix}${columnIndex}`,
-      title: `Column ${columnIndex}`,
-      width: 150
-    }))
+
 </script>
 
 <style lang='scss' scoped>

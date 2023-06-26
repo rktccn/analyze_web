@@ -4,11 +4,11 @@
     关联规则
   </span>
     <el-button type='primary' @click="getData">导入数据</el-button>
-    <load-data :columns="originColumns" :data="originData"></load-data>
+    <load-data :data="originData"></load-data>
     <div class='main block'>
       <el-row :gutter='20' style='height: 100%;width: 100%;'>
         <el-col :span='18'>
-          <v-chart class='chart' :option='option' autoresize/>
+          <v-chart class='chart' :option='option'  autoresize/>
         </el-col>
         <el-col :span='6'>
           <!--支持度，置信度输入框-->
@@ -34,9 +34,11 @@ import {
   GridComponent,
   VisualMapComponent, TitleComponent
 } from 'echarts/components'
-import VChart, {THEME_KEY} from 'vue-echarts'
-import {ref, provide} from 'vue'
+import VChart from 'vue-echarts'
+import {computed, ref} from 'vue'
+import {getOriginData, getHeatMapData} from "@/apis";
 import LoadData from '@/components/loadData.vue'
+
 
 use([
   CanvasRenderer,
@@ -48,112 +50,105 @@ use([
 ])
 
 // 原始数据
-const originData = ref([])
-const originColumns = ref([])
+const originData = ref({
+  data: [],
+  columns: [],
+  count: 0
+})
+// 热力图数据
+const heatMapData = ref({
+  data: [],
+  xAxis: [],
+  yAxis: []
+})
 
 // 置信度
 const confidence = ref(0.5)
 // 支持度
 const support = ref(0.5)
 
-const dataSet = ['面包', '可乐', '麦片', '牛奶', '鸡蛋']
-// prettier-ignore
-const data = [[0, 0, 0.7777777777777778], [0, 1, 0.4444444444444444], [0, 2, 0.4444444444444444], [0, 3, 0.4444444444444444], [0, 4, 0.2222222222222222], [1, 0, 0.4444444444444444], [1, 1, 0.6666666666666666], [1, 2, 0.1111111111111111], [1, 3, 0.4444444444444444], [1, 4, 0.0], [2, 0, 0.4444444444444444], [2, 1, 0.1111111111111111], [2, 2, 0.4444444444444444], [2, 3, 0.2222222222222222], [2, 4, 0.2222222222222222], [3, 0, 0.4444444444444444], [3, 1, 0.4444444444444444], [3, 2, 0.2222222222222222], [3, 3, 0.6666666666666666], [3, 4, 0.1111111111111111], [4, 0, 0.2222222222222222], [4, 1, 0.0], [4, 2, 0.2222222222222222], [4, 3, 0.1111111111111111], [4, 4, 0.2222222222222222]]
-    .map(function (item) {
-      return [item[1], item[0], item[2].toFixed(2) || '-']
-    })
-
-const option = ref({
-  title: {
-    text: '关联热力图',
-    left: 'center',
-    top: 'bottom'
-  },
-  tooltip: {
-    position: 'top',
-    formatter: function (params) {
-      return (
-          dataSet[params.value[0]] +
-          '-' +
-          dataSet[params.value[1]] +
-          '：' +
-          params.value[2]
-      )
-    }
-  },
-  grid: {
-    height: '50%',
-    top: '10%'
-  },
-  xAxis: {
-    type: 'category',
-    data: dataSet,
-    splitArea: {
-      show: true
-    }
-  },
-  yAxis: {
-    type: 'category',
-    data: dataSet,
-    splitArea: {
-      show: true
-    }
-  },
-  visualMap: {
-    min: 0,
-    max: 1,
-    calculable: true,
-    orient: 'horizontal',
-    left: 'center',
-    bottom: '15%'
-  },
-  series: [
-    {
-      name: 'Punch Card',
-      type: 'heatmap',
-      data: data,
-      label: {
+const option = computed(() => {
+  return {
+    title: {
+      text: '关联热力图',
+      left: 'center',
+      top: 'bottom'
+    },
+    tooltip: {
+      position: 'top',
+      formatter: function (params) {
+        return (
+            heatMapData.value.xAxis[params.value[0]] +
+            '-' +
+            heatMapData.value.yAxis[params.value[1]] +
+            '：' +
+            params.value[2]
+        )
+      }
+    },
+    grid: {
+      height: '50%',
+      top: '10%'
+    },
+    xAxis: {
+      type: 'category',
+      // TODO:修改数据源
+      data: heatMapData.value.xAxis,
+      splitArea: {
         show: true
-      },
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
+      }
+    },
+    yAxis: {
+      type: 'category',
+      // TODO:修改数据源
+      data: heatMapData.value.yAxis,
+      splitArea: {
+        show: true
+      }
+    },
+    visualMap: {
+      min: 0,
+      max: 1,
+      calculable: true,
+      orient: 'horizontal',
+      left: 'center',
+      bottom: '15%'
+    },
+    series: [
+      {
+        name: 'Punch Card',
+        type: 'heatmap',
+        data: heatMapData.value.data,
+        label: {
+          show: true
+        },
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
         }
       }
-    }
-  ]
+    ]
+  }
 })
 
 const getData = () => {
-  const generateColumns = (length = 10, prefix = 'column-', props) =>
-      Array.from({length}).map((_, columnIndex) => ({
-        ...props,
-        key: `${prefix}${columnIndex}`,
-        dataKey: `${prefix}${columnIndex}`,
-        title: `Column ${columnIndex}`,
-        width: 150
-      }))
+  getOriginData(0).then(res => {
+    console.log(res)
+    originData.value.data = res.data
+    originData.value.columns = res.columns
+    originData.value.count = res.count
+  })
 
-  const generateData = (
-      columns,
-      length = 200,
-      prefix = 'row-'
-  ) =>
-      Array.from({length}).map((_, rowIndex) => {
-        return columns.reduce(
-            (rowData, column, columnIndex) => {
-              rowData[column.dataKey] = `Row ${rowIndex} - Col ${columnIndex}`
-              return rowData
-            }, {
-              id: `${prefix}${rowIndex}`
-              // parentId: null
-            }
-        )
-      })
-
-  originColumns.value = generateColumns(10)
-  originData.value = generateData(originColumns.value, 1000)
+  getHeatMapData(confidence.value, support.value).then(res => {
+    console.log(res)
+    heatMapData.value.data = res.data.map(function (item) {
+      return [item[1], item[0], item[2].toFixed(2) || '-']
+    })
+    heatMapData.value.xAxis = res.xAxis
+    heatMapData.value.yAxis = res.yAxis
+  })
 }
 </script>
 

@@ -4,7 +4,7 @@
     分类分析
   </span>
     <el-button type='primary' @click="getData">导入数据</el-button>
-    <load-data :columns="originColumns" :data="originData"></load-data>
+    <load-data :data="originData"></load-data>
     <div class='main block'>
       <el-row :gutter='20'>
         <el-col :span='18'>
@@ -32,8 +32,9 @@ import {
   TooltipComponent
 } from 'echarts/components'
 import VChart from 'vue-echarts'
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import LoadData from '@/components/loadData.vue'
+import {getOriginData, getTreeData} from "@/apis";
 
 use([
   TreeChart,
@@ -42,8 +43,14 @@ use([
 ])
 
 // 原始数据
-const originData = ref([])
-const originColumns = ref([])
+const originData = ref({
+  data: [],
+  columns: [],
+  count: 0
+})
+
+// 条件树数据
+const treeData = ref({})
 
 const data = {
   name: 'root',
@@ -75,40 +82,43 @@ const data = {
   ]
 }
 
-const option = ref({
-      tooltip: {
-        trigger: 'item',
-        triggerOn: 'mousemove'
-      },
-      series: [
-        {
-          type: 'tree',
-          data: [data],
-          left: '2%',
-          right: '2%',
-          top: '8%',
-          bottom: '20%',
-          symbol: 'emptyCircle',
-          orient: 'vertical',
-          expandAndCollapse: true,
-          label: {
-            position: 'top',
-            rotate: 0,
-            verticalAlign: 'middle',
-            align: 'right',
-            fontSize: 24
-          },
-          leaves: {
+const option = computed(() => {
+      return {
+        tooltip: {
+          trigger: 'item',
+          triggerOn: 'mousemove'
+        },
+        series: [
+          {
+            type: 'tree',
+            // TODO:修改数据源
+            data: [treeData.value],
+            left: '2%',
+            right: '2%',
+            top: '8%',
+            bottom: '20%',
+            symbol: 'emptyCircle',
+            orient: 'vertical',
+            expandAndCollapse: true,
             label: {
-              position: 'bottom',
+              position: 'top',
               rotate: 0,
               verticalAlign: 'middle',
-              align: 'left'
-            }
-          },
-          animationDurationUpdate: 750
-        }
-      ]
+              align: 'right',
+              fontSize: 24
+            },
+            leaves: {
+              label: {
+                position: 'bottom',
+                rotate: 0,
+                verticalAlign: 'middle',
+                align: 'left'
+              }
+            },
+            animationDurationUpdate: 750
+          }
+        ]
+      }
     }
 )
 
@@ -117,34 +127,18 @@ const minLeaf = ref(1)
 
 
 const getData = () => {
-  const generateColumns = (length = 10, prefix = 'column-', props) =>
-      Array.from({length}).map((_, columnIndex) => ({
-        ...props,
-        key: `${prefix}${columnIndex}`,
-        dataKey: `${prefix}${columnIndex}`,
-        title: `Column ${columnIndex}`,
-        width: 150
-      }))
+  // TODO:修改数据源
+  getOriginData(2).then(res => {
+    console.log(res)
+    originData.value.data = res.data
+    originData.value.columns = res.columns
+    originData.value.count = res.count
+  })
 
-  const generateData = (
-      columns,
-      length = 200,
-      prefix = 'row-'
-  ) =>
-      Array.from({length}).map((_, rowIndex) => {
-        return columns.reduce(
-            (rowData, column, columnIndex) => {
-              rowData[column.dataKey] = `Row ${rowIndex} - Col ${columnIndex}`
-              return rowData
-            }, {
-              id: `${prefix}${rowIndex}`
-              // parentId: null
-            }
-        )
-      })
 
-  originColumns.value = generateColumns(10)
-  originData.value = generateData(originColumns.value, 1000)
+  getTreeData().then(res => {
+    treeData.value = res.data
+  })
 }
 
 </script>
