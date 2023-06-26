@@ -71,36 +71,6 @@ const minLeaf = computed({
 // 条件树数据
 const treeData = ref({})
 
-const data = {
-  name: 'root',
-  children: [
-    {
-      name: '分类1',
-      children: [
-        {name: '叶子节点1'},
-        {name: '叶子节点2'},
-        {
-          name: '叶子节点3',
-          children: [
-            {name: '叶子节点3-1'},
-            {name: '叶子节点3-2'},
-            {name: '叶子节点3-3'}
-          ]
-        }
-      ]
-    },
-    {
-      name: '分类2',
-      children: [
-        {
-          name: '叶子节点4',
-          children: [{name: '叶子节点5'}]
-        }
-      ]
-    }
-  ]
-}
-
 const option = computed(() => {
       return {
         tooltip: {
@@ -144,7 +114,8 @@ const option = computed(() => {
 
 const getChangeData = () => {
   getTreeData(maxDepth.value, minLeaf.value).then(res => {
-    treeData.value = res.data
+    console.log(res)
+    treeData.value = res.data.data
   })
 }
 
