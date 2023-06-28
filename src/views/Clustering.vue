@@ -28,7 +28,7 @@
           <!--聚类图展示-->
           <div class='main block' style='text-align: center'>
             <v-chart class='chart' :option='clusterOption' autoresize/>
-            <el-select v-model="clusterType" class="m-2" placeholder="Select" size="large" @change="getClusterByType">
+            <el-select v-model="clusterType" class="m-2" placeholder="Select" size="large" @change="getChangeData">
               <el-option
                   v-for="item in clusterTypeOptions"
                   :key="item.value"
@@ -116,7 +116,6 @@ const clusterTypeOptions = [
 // 切换散点图类型
 const getScatterDataByType = () => {
   getScatterData(scatterType.value).then(res => {
-    console.log(res)
     scatterData.value.scatterData = res.data.map(item => {
       return {
         symbolSize: 14,
@@ -135,11 +134,51 @@ const getScatterDataByType = () => {
       }
     })
   })
-}
+
+  originData.value = {
+    data: [],
+    columns: [],
+    count: 0
+  }
+
+  // 格式化团状、月牙数据
+  if (scatterType.value !== 0) {
+    originData.value.columns = [{
+      dataKey: 'xAxis',
+      key: 'xAxis',
+      title: '横坐标',
+      width: 150
+    }, {
+      dataKey: 'yAxis',
+      key: 'yAxis',
+      title: '纵坐标',
+      width: 150
+    }]
 
 
-const getClusterByType = () => {
-  getChangeData()
+    const temp = []
+    scatterData.value.scatterData.forEach(item => {
+      temp.push(...item.data)
+    })
+
+    originData.value.data = temp.map((item, index) => {
+      return {
+        xAxis: item[0],
+        yAxis: item[1],
+        id: index
+      }
+    })
+
+    originData.value.count = temp.length
+
+    console.log(originData.value)
+  } else {
+    getOriginData(1).then(res => {
+      originData.value.data = res.data
+      originData.value.columns = res.columns
+      originData.value.count = res.count
+    })
+  }
 }
 
 // K值
@@ -220,7 +259,6 @@ const getData = () => {
 
 
   getScatterData(scatterType.value).then(res => {
-    console.log(res)
     scatterData.value.scatterData = res.data.map(item => {
       return {
         symbolSize: 14,
