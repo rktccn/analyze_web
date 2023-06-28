@@ -13,11 +13,11 @@ export const getOriginData = (type) => {
 }
 //
 // // 获取热力图数据
-export const getHeatMapData = (confidence,support) => {
+export const getHeatMapData = (confidence, support) => {
     return http({
         url: '/get_association_data',
         method: 'get',
-        params:{
+        params: {
             confidence,
             support
         }
@@ -25,31 +25,36 @@ export const getHeatMapData = (confidence,support) => {
 }
 //
 // // 获取散点图数据
-export const getScatterData = () => {
+export const getScatterData = (scatterType) => {
+    console.log(scatterType)
     return http({
         url: '/get_scatter_data',
         method: 'get',
+        params: {
+            scatterType
+        }
     })
 }
 //
 // // 获取聚类数据
-export const getClusterData = (k_value = 3, type = 0) => {
+export const getClusterData = (k_value = 3, clusterType = 0, scatterType = 0) => {
     return http({
         url: '/get_cluster_data',
         method: 'get',
         params: {
             k_value,
-            type
+            clusterType,
+            scatterType
         }
     })
 }
 //
 // 获取分类树
-export const getTreeData = (maxDepth,minLeaf) => {
+export const getTreeData = (maxDepth, minLeaf) => {
     return http({
         url: '/get_tree_data',
         method: 'get',
-        params:{
+        params: {
             maxDepth,
             minLeaf
         }

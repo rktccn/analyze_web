@@ -9,15 +9,36 @@
       <el-row :gutter='20'>
         <el-col :span='12'>
           <!--散点图展示-->
-          <div class='main block'>
+          <div class='main block' style="text-align: center">
             <v-chart class='chart' :option='scatterOption' autoresize/>
+            <!--切换数据类型-->
+            <el-select v-model="scatterType" class="m-2" placeholder="Select" size="large"
+                       @change="getScatterDataByType"
+            >
+              <el-option
+                  v-for="item in scatterTypeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+              />
+            </el-select>
           </div>
         </el-col>
         <el-col :span='12'>
           <!--聚类图展示-->
           <div class='main block' style='text-align: center'>
             <v-chart class='chart' :option='clusterOption' autoresize/>
-            <span>K值设定： <el-input-number v-model='k_value' :min='1' :max='10'/></span>
+            <el-select v-model="clusterType" class="m-2" placeholder="Select" size="large" @change="getClusterByType">
+              <el-option
+                  v-for="item in clusterTypeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+              />
+            </el-select>
+            <br/>
+            <br/>
+            <span v-if="clusterType===0">K值设定： <el-input-number v-model='k_value' :min='1' :max='10'/></span>
           </div>
         </el-col>
       </el-row>
@@ -62,16 +83,75 @@ const scatterData = ref({
   clusterData: []
 })
 
+// 数据类型（月牙，团状）
+const scatterType = ref(0)
+const scatterTypeOptions = [
+  {
+    value: 0,
+    label: 'iris'
+  },
+  {
+    value: 1,
+    label: '团状'
+  },
+  {
+    value: 2,
+    label: '月牙'
+  }
+]
+
+// 聚簇类型
+const clusterType = ref(0)
+const clusterTypeOptions = [
+  {
+    value: 0,
+    label: 'K-means'
+  },
+  {
+    value: 1,
+    label: 'DBSCAN'
+  }
+]
+
+// 切换散点图类型
+const getScatterDataByType = () => {
+  getScatterData(scatterType.value).then(res => {
+    console.log(res)
+    scatterData.value.scatterData = res.data.map(item => {
+      return {
+        symbolSize: 14,
+        type: 'scatter',
+        data: item
+      }
+    })
+  })
+
+  getClusterData(k_value.value, clusterType.value, scatterType.value).then(res => {
+    scatterData.value.clusterData = res.data.map(item => {
+      return {
+        symbolSize: 14,
+        type: 'scatter',
+        data: item
+      }
+    })
+  })
+}
+
+
+const getClusterByType = () => {
+  getChangeData()
+}
+
 // K值
 const k = ref(3)
 const k_value = computed(
-  {
-    get: () => k.value,
-    set: (value) => {
-      k.value = value
-      debounce(getChangeData, 500)()
+    {
+      get: () => k.value,
+      set: (value) => {
+        k.value = value
+        debounce(getChangeData, 500)()
+      }
     }
-  }
 )
 
 // 生成十二种不同颜色
@@ -118,7 +198,7 @@ const clusterOption = computed(() => {
 
 // 获取可变数据
 const getChangeData = () => {
-  getClusterData(k_value.value, 1).then(res => {
+  getClusterData(k_value.value, clusterType.value, scatterType.value).then(res => {
     scatterData.value.clusterData = res.data.map(item => {
       return {
         symbolSize: 14,
@@ -139,7 +219,7 @@ const getData = () => {
   })
 
 
-  getScatterData().then(res => {
+  getScatterData(scatterType.value).then(res => {
     console.log(res)
     scatterData.value.scatterData = res.data.map(item => {
       return {
