@@ -53,12 +53,11 @@ const originData = ref({
 })
 
 // 散点数据
-const scatterData = ref([
-  {
-    symbolSize: 12,
-    data: [],
-    type: 'scatter'
-  }]
+const scatterData = ref({
+      symbolSize: 12,
+      data: [],
+      type: 'scatter'
+    }
 )
 
 // 回归数据
@@ -102,7 +101,7 @@ const option = computed(() => {
       }
     },
     yAxis: {},
-    series: [...scatterData.value, regressionData.value],
+    series: [scatterData.value, regressionData.value],
   }
 })
 
@@ -131,11 +130,11 @@ const getData = () => {
 
     originData.value.count = res.data.length
 
-    scatterData.value = [{
+    scatterData.value = {
       symbolSize: 8,
       data: res.data,
       type: 'scatter'
-    }]
+    }
 
     generateRegressionData(res.coef, res.intercept)
   })
