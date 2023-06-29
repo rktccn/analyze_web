@@ -170,8 +170,6 @@ const getScatterDataByType = () => {
     })
 
     originData.value.count = temp.length
-
-    console.log(originData.value)
   } else {
     getOriginData(1).then(res => {
       originData.value.data = res.data
